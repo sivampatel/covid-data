@@ -22,14 +22,14 @@ class View extends React.Component {
         }
     }
     
-    async componentDidMount(){
+    componentDidMount(){
         this.getData()
     }
 
     getCbsaTitle = async (id) => {
         return await fetch('https://public.opendatasoft.com/api/records/1.0/search/?dataset=core-based-statistical-areas-cbsas-and-combined-statistical-areas-csas&q=&facet=cbsa_code&refine.cbsa_code=' + id)
         .then(res => res.json())
-        .then(res => res.records.cbsa_title)
+        .then(res => res.records[0].fields.cbsa_title)
     }
 
     getName = (res) => {
@@ -39,6 +39,7 @@ class View extends React.Component {
             return `${res.county}, ${res.state}`
         if(this.state.area === 'cbsa')
             return this.getCbsaTitle(this.state.id)
+        return 'United States'
     }
 
     getData = async () => {
@@ -68,28 +69,27 @@ class View extends React.Component {
 
 
     render() {
-        
         return (
             <div>
-                <Title>{this.state.title || '...'}</Title>
-                <Card style={{border: `none`}} >
+                <Title>{ this.state.title || '...' }</Title>
+                <Card style={ { border: `none` } } >
                     <Row align="middle" justify="center">
-                    <Col span={8}>
-                            <Card title="Cases" bordered={false} loading={this.state.loading}>
-                                <Row justify="space-around" gutter={[24, 36]} >
+                        <Col span={ 8 }>
+                            <Card title="Cases" bordered={ false } loading={ this.state.loading }>
+                                <Row justify="space-around" gutter={ [24, 36] } >
                                     <Col>
-                                    <Statistic title="New Cases" value={this.state.cases} />
+                                        <Statistic title="New Cases" value={ this.state.cases } />
                                     </Col>
                                     <Col>
-                                    <Statistic
-                                        title="Day Change"
-                                        value={ Math.abs(this.state.casesBefore) }
-                                        valueStyle={{ color: this.state.casesBefore > 0 ? '#cf1322' : '#3f8600' }}
-                                        prefix={ this.state.casesBefore > 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
-                                    />
+                                        <Statistic
+                                            title="Day Change"
+                                            value={ Math.abs(this.state.casesBefore) }
+                                            valueStyle={ { color: this.state.casesBefore > 0 ? '#cf1322' : '#3f8600' } }
+                                            prefix={ this.state.casesBefore > 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined /> }
+                                        />
                                     </Col>
                                     <Col>
-                                    <Statistic title="7 Day Avg" value={this.state.weekAvgCases} />
+                                        <Statistic title="7 Day Avg" value={ this.state.weekAvgCases } />
                                     </Col>
                                 </Row>
                             </Card>
@@ -98,29 +98,28 @@ class View extends React.Component {
                 </Card>
                 <Card>
                     <Row align="middle" justify="center">
-                        <Col span={8}>
-                            <Card title="Deaths" bordered={false} loading={this.state.loading}>
-                                <Row justify="space-around" gutter={[24, 36]}>
+                        <Col span={ 8 }>
+                            <Card title="Deaths" bordered={ false } loading={ this.state.loading }>
+                                <Row justify="space-around" gutter={ [24, 36] }>
                                     <Col>
-                                        <Statistic title="New Deaths" value={this.state.deaths} />
+                                        <Statistic title="New Deaths" value={ this.state.deaths } />
                                     </Col>
                                     <Col>
                                         <Statistic
                                             title="Day Change"
                                             value={ Math.abs(this.state.deathsBefore) }
-                                            valueStyle={{ color: this.state.deathsBefore > 0 ? '#cf1322' : '#3f8600' }}
-                                            prefix={ this.state.deathsBefore > 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
+                                            valueStyle={ { color: this.state.deathsBefore > 0 ? '#cf1322' : '#3f8600' } }
+                                            prefix={ this.state.deathsBefore > 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined /> }
                                         />
                                     </Col>
                                     <Col>
-                                        <Statistic title="7 Day Avg" value={this.state.weekAvgDeaths} />
+                                        <Statistic title="7 Day Avg" value={ this.state.weekAvgDeaths } />
                                     </Col>
                                 </Row>
                             </Card>
                         </Col>
                     </Row>
                 </Card>
-
             </div>
         )
     }
